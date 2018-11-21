@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">SymLabo2</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">SYM Labo 2</string>
+    <string name="nav_header_subtitle">Protocoles applicatifs</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_home">Accueil</string>
+    <string name="title_asynchrone">Asynchrone</string>
+    <string name="title_differee">Differée</string>
+    <string name="title_objets">Objets</string>
+    <string name="title_compressee">Compressée</string>
+    <string name="title_graphql">GraphQL</string>
+    <string name="title_menu_group">Activités de labo</string>
+
+    <string name="button_envoyer">Envoyer</string>
+
+    <!-- async activity -->
+    <string name="label_ecire">Ecrire</string>
+    <string name="label_result">Résultat</string>
+
+</resources>
