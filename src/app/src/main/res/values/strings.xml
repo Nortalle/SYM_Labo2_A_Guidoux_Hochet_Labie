@@ -25,6 +25,12 @@
     <string name="button_JSON">Envoyer JSON</string>
     <string name="button_TEXT">Envoyer Text</string>
 
+    <!-- differee activity -->
+    <string name="label_connecte">Connecté : </string>
+    <string name="label_element_attente">Nombre de requête en attente : </string>
+
+
+    <!-- ... activity -->
     <string name="radio_button_XML">xml</string>
     <string name="radio_button_JSON">json</string>
     <string name="radio_button_TEXT">txt</string>
