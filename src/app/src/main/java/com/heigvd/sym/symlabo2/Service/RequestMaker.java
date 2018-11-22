@@ -10,8 +10,8 @@ import java.net.URL;
 
 public class RequestMaker {
 
-    final static String GET = "GET";
-    final static String POST = "POST";
+    final static String GET     = "GET";
+    final static String POST    = "POST";
 
     private CommunicationEventListener listener;
 
