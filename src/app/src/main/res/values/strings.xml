@@ -20,4 +20,13 @@
     <string name="label_ecire">Ecrire</string>
     <string name="label_result">Résultat</string>
 
+    <!-- object activity -->
+    <string name="button_XML">Envoyer XML</string>
+    <string name="button_JSON">Envoyer JSON</string>
+    <string name="button_TEXT">Envoyer Text</string>
+
+    <string name="radio_button_XML">xml</string>
+    <string name="radio_button_JSON">json</string>
+    <string name="radio_button_TEXT">txt</string>
+
 </resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE directory SYSTEM "http://sym.iict.ch/directory.dtd">
+<directory>
+    <person>
+        <name>Guidoux</name>
+        <firstname>Vincent</firstname>
+        <middlename>Claude</middlename>
+        <gender>Male</gender>
+        <phone type="home">0244336969</phone>
+        <phone type="mobile">0798116369</phone>
+    </person>
+    <person>
+        <name>Labie</name>
+        <firstname>Marc</firstname>
+        <gender>Fluid</gender>
+        <phone type="mobile">0786297569</phone>
+    </person>
+    <person>
+        <name>Hochet</name>
+        <firstname>Guillaume</firstname>
+        <gender>Female</gender>
+        <phone type="mobile">0774117769</phone>
+    </person>
+</directory>

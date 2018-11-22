@@ -25,6 +25,13 @@ public class RequestMaker {
         task.execute(request);
     }
 
+    public void sendRequest(String request, String urltext, String verb, String contentType) {
+
+        SymTask task = new SymTask(urltext, verb, listener);
+        task.execute(request, contentType);
+    }
+
+
     public void setCommunicationEventListener(CommunicationEventListener listener) {
         this.listener = listener;
     }
