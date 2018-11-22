@@ -28,5 +28,11 @@
     <string name="radio_button_XML">xml</string>
     <string name="radio_button_JSON">json</string>
     <string name="radio_button_TEXT">txt</string>
+    <string name="post_title" translatable="false">title</string>
+    <string name="post_description" translatable="false">description</string>
+    <string name="post_content" translatable="false">content</string>
+    <string name="post_date" translatable="false">date</string>
+
+
 
 </resources>

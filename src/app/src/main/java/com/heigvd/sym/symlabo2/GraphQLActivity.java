@@ -3,9 +3,14 @@ package com.heigvd.sym.symlabo2;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.text.method.ScrollingMovementMethod;
 import android.util.JsonReader;
 import android.util.JsonToken;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,45 +31,70 @@ public class GraphQLActivity extends AppCompatActivity {
     private RequestMaker maker = new RequestMaker();
     private Spinner dropDownMenu;
     private TextView textView;
+    private List<Author> authors;
+    private RecyclerView posts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph_ql);
+        authors = new ArrayList<Author>();
 
         dropDownMenu = (Spinner) findViewById(R.id.dropDownMenu);
+        //posts = (RecyclerView) findViewById(R.id.postsView);
         textView = (TextView) findViewById(R.id.textView);
 
+        textView.setMovementMethod(new ScrollingMovementMethod());
+
+
         String query = "{\"query\":\"{allAuthors{id first_name last_name}}\"}";
+        dropDownMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String query = "{\"query\":\"{allPostByAuthor(authorId :" + (i + 1) + "){id title description content date}}\"}";
+                maker.sendRequest(query, "http://sym.iict.ch/api/graphql", "POST", "application/json");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                textView.setText("cunni");
+            }
+        });
 
         maker.setCommunicationEventListener(new CommunicationEventListener() {
             public void handleServerResponse(String response) {
                 Toast.makeText(GraphQLActivity.this, "Reponse du serveur", Toast.LENGTH_LONG).show();
 
                 textView.setText(response);
-                try {
-                    textView.setText(readJsonStream(response).toString());
-                    List<Author> authors = readJsonStream(response);
-                    List<String> authorsName = new ArrayList<String>();
+                if (response.startsWith("{\"data\":{\"allAuthors\":")) {
+                    textView.setText(response);
+                    try {
+                        authors = readJsonStream(response);
+                        List<String> authorsName = new ArrayList<String>();
 
-                    for (Author author : authors) {
-                        authorsName.add(author.toString());
+                        for (Author author : authors) {
+                            authorsName.add(author.toString());
+                        }
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(GraphQLActivity.this, android.R.layout.simple_spinner_item, authorsName);
+
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        dropDownMenu.setAdapter(adapter);
+                    } catch (IOException e) {
+                        textView.setText("Pasencore");
+                        Toast.makeText(GraphQLActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+
                     }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(GraphQLActivity.this, android.R.layout.simple_spinner_item, authorsName);
-
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    dropDownMenu.setAdapter(adapter);
-                } catch (IOException e) {
-                    textView.setText("Pasencore");
-                    Toast.makeText(GraphQLActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                } else {
 
                 }
+
             }
         });
 
-
-        maker.sendRequest(query, "http://sym.iict.ch/api/graphql", "POST", "application/json");
+        if (authors.isEmpty()) {
+            maker.sendRequest(query, "http://sym.iict.ch/api/graphql", "POST", "application/json");
+        }
 
     }
 
@@ -166,4 +196,6 @@ public class GraphQLActivity extends AppCompatActivity {
             return firstname + " " + lastname;
         }
     }
+
+
 }
