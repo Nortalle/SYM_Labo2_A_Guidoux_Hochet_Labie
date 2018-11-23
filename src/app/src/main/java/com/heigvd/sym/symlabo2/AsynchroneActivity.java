@@ -4,7 +4,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,10 +22,12 @@ public class AsynchroneActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_asynchrone);
 
+        // Linkage des objets d'UI
         write = (TextView) findViewById(R.id.async_write_text);
         result = (TextView) findViewById(R.id.async_result_text);
         sendButton = (Button) findViewById(R.id.async_send_button);
 
+        // Création du listener qui gère la réponse du serveur
         maker.setCommunicationEventListener(new CommunicationEventListener() {
             public void handleServerResponse(String response) {
                 Toast.makeText(AsynchroneActivity.this, "Reponse du serveur", Toast.LENGTH_LONG).show();
@@ -35,13 +36,15 @@ public class AsynchroneActivity extends AppCompatActivity {
             }
         });
 
+        // Lorsque l'utilisateur clique sur envoyer
         sendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
 
                 // Clean result
                 result.setText("");
-
                 String request = write.getText().toString();
+
+                // Si on a pas de requête on fait rien
                 if(request.length() == 0)
                     Toast.makeText(AsynchroneActivity.this, "Vous n'avez rien écrit", Toast.LENGTH_LONG).show();
                 else {
