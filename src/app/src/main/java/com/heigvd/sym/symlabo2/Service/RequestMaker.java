@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,7 +19,7 @@ public class RequestMaker {
     final static String GET     = "GET";
     final static String POST    = "POST";
 
-    private CommunicationEventListener listener;
+    private CommunicationResponseEventListener listener;
 
     public void sendRequest(String request, String url) {
         sendRequest(request, url, POST);
@@ -32,6 +33,7 @@ public class RequestMaker {
 
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", contentType);
+        sendRequest(request, urltext, verb, headers);
     }
 
     public void sendRequest(String request, String urltext, String verb, Map<String, String> headers) {
@@ -40,21 +42,21 @@ public class RequestMaker {
         task.execute(request);
     }
 
-    public void setCommunicationEventListener(CommunicationEventListener listener) {
+    public void setCommunicationEventListener(CommunicationResponseEventListener listener) {
         this.listener = listener;
     }
 
     /**
      * Tache interne permettant d'exécuter la requête dans un thread séparé
      */
-    static class SymTask extends AsyncTask<String, Void, String> {
+    static class SymTask extends AsyncTask<String, Void, ServerResponse> {
 
         private String url;
         private String verb;
         private Map<String, String> headers;
-        private CommunicationEventListener listener;
+        private CommunicationResponseEventListener listener;
 
-        public SymTask(String url, String verb, CommunicationEventListener listener, Map<String, String> headers) {
+        public SymTask(String url, String verb, CommunicationResponseEventListener listener, Map<String, String> headers) {
             this.url = url;
             this.verb = verb;
             this.headers = headers;
@@ -62,7 +64,7 @@ public class RequestMaker {
         }
 
         @Override
-        protected String doInBackground(String... request) {
+        protected ServerResponse doInBackground(String... request) {
 
             try {
 
@@ -89,6 +91,20 @@ public class RequestMaker {
 
                 // Partie bloquante en attendant une réponse serveur
                 int statusCode = connection.getResponseCode();
+
+                // Récupération des headers
+                Map<String, String> responseHeaders = new HashMap<>();
+                for(Map.Entry<String, List<String>> entry : connection.getHeaderFields().entrySet()) {
+                    StringBuilder value = new StringBuilder();
+                    List<String> header = entry.getValue();
+                    for(int i = 0; i < header.size(); i++) {
+                         value.append(header.get(i));
+                         if(i < header.size() - 1) value.append(",");
+                    }
+
+                    responseHeaders.put(entry.getKey(), value.toString());
+                }
+
                 BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
                 StringBuilder content = new StringBuilder();
@@ -97,12 +113,11 @@ public class RequestMaker {
                 while((inputLine = in.readLine()) != null)
                     content.append(inputLine);
                 in.close();
-                System.out.println("Post read response");
 
                 connection.disconnect();
 
                 // Délégation au listener s'il y en a un dans onPostExecute
-                return content.toString();
+                return new ServerResponse(statusCode, content.toString(), responseHeaders);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -110,8 +125,8 @@ public class RequestMaker {
             }
         }
 
-        protected void onPostExecute(String result) {
-            if(this.listener != null) this.listener.handleServerResponse(result);
+        protected void onPostExecute(ServerResponse response) {
+            if(this.listener != null) this.listener.onServerResponse(response);
         }
     }
 }
